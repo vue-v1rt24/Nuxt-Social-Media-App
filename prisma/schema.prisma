@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Таблица пользователя
+model User {
+  id           Int     @id @default(autoincrement())
+  name         String
+  username     String  @unique
+  email        String
+  password     String
+  profileImage String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Связь с таблицей RefreshToken
+  refreshToken RefreshToken[]
+
+  // Связь с таблицей Tweet
+  tweet Tweet[]
+
+  // Связь с таблицей MediaFiles
+  mediaFiles MediaFiles[]
+}
+
+// Таблица токена
+model RefreshToken {
+  id    Int    @id @default(autoincrement())
+  token String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Связь с таблицей User
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+}
+
+// Таблица сообщений
+model Tweet {
+  id   Int    @id @default(autoincrement())
+  text String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Связь с таблицей User
+  author   User @relation(fields: [authorId], references: [id])
+  authorId Int
+
+  // Связь с собою. Когда отвечаем на сообщение
+  // replyToId Int?
+  // replyTo   Tweet?  @relation("replies", fields: [replyToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  // replies   Tweet[] @relation("replies")
+
+  // Связь с таблицей MediaFiles
+  mediaFiles MediaFiles[]
+}
+
+// Таблица для изображений сообщений
+model MediaFiles {
+  id  Int    @id @default(autoincrement())
+  url String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Связь с таблицей User
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  // Связь с таблицей Tweet
+  tweet   Tweet? @relation(fields: [tweetId], references: [id])
+  tweetId Int?
+}

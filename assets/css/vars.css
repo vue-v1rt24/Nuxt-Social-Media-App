@@ -1,0 +1,10 @@
+@import '../fonts/fonts.css';
+
+:root {
+  --accent-color: rgb(0, 195, 255);
+  --accent-color-num: 0 195 255;
+  --font-family-Montserrat: MontserratSite, sans-serif;
+  --font-family-Roboto: RobotoSite, sans-serif;
+  --border-color: #ccc;
+  --padding-main: 0 30px;
+}
